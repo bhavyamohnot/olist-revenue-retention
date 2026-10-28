@@ -2,7 +2,7 @@
 
 Revenue reliability, growth drivers and retention analysis on ~100k real orders from Olist, a Brazilian e-commerce marketplace.
 
-**📊 Dashboard:** [Looker Studio link]  ·  **📝 Memo:** [docs/memo.md](docs/memo.md)  ·  **📖 Metric dictionary:** [docs/metric_dictionary.md](docs/metric_dictionary.md)  ·  **🔢 Full results:** [docs/results.md](docs/results.md)
+**📊 Dashboard:** [Looker Studio dashboard](https://lookerstudio.google.com/reporting/303762a4-ea28-491c-8b66-67e819dec816)  ·  **📝 Memo:** [docs/memo.md](docs/memo.md)  ·  **📖 Metric dictionary:** [docs/metric_dictionary.md](docs/metric_dictionary.md)  ·  **🔢 Full results:** [docs/results.md](docs/results.md)
 
 ## Key findings
 | | |

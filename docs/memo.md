@@ -21,4 +21,4 @@
 4. **Investigate the Northeast**: check delivery times and freight share of order value there versus the Southeast.
 5. **Get the missing data**: commission/margin by category (the CLV uses an assumed 20% margin) and marketing-touch data, to replace assumptions with measured campaign ROI.
 
-*Dashboard: [link] · SQL & method: github.com/[username]/olist-revenue-retention*
+*Dashboard: https://lookerstudio.google.com/reporting/303762a4-ea28-491c-8b66-67e819dec816 · SQL & method: https://github.com/bhavyamohnot/olist-revenue-retention*
