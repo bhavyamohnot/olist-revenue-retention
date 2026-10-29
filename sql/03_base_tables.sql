@@ -1,6 +1,3 @@
--- 03_base_tables.sql
--- One clean item-level fact table that every later analysis reads from.
-
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.fact_items` AS
 WITH delivered AS (
   SELECT
@@ -8,7 +5,6 @@ WITH delivered AS (
     c.customer_unique_id,
     c.customer_state,
     o.order_purchase_timestamp AS purchased_at,
-    -- 1 = this person's first delivered order
     DENSE_RANK() OVER (PARTITION BY c.customer_unique_id
                        ORDER BY o.order_purchase_timestamp, o.order_id) AS order_seq
   FROM `olist-analytics-513008.olist.orders` o
@@ -39,7 +35,6 @@ JOIN `olist-analytics-513008.olist.order_items` i USING (order_id)
 LEFT JOIN `olist-analytics-513008.olist.products` p USING (product_id)
 LEFT JOIN `olist-analytics-513008.olist.category_translation` t USING (product_category_name);
 
--- Sanity check: GMV here must equal item_total in the reconciliation table.
 SELECT
   ROUND(SUM(gmv), 0)                  AS fact_gmv,
   COUNT(DISTINCT order_id)            AS orders,

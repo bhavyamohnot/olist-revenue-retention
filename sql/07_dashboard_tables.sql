@@ -1,7 +1,3 @@
--- 07_dashboard_tables.sql
--- Small, ready-to-chart tables for Looker Studio (prefix dash_).
-
--- Headline KPIs (one row).
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.dash_kpis` AS
 SELECT
   (SELECT ROUND(SUM(gmv), 0) FROM `olist-analytics-513008.olist.fact_items`)                       AS total_gmv,
@@ -12,20 +8,17 @@ SELECT
   (SELECT ROUND(COUNTIF(recon_status = 'match') / COUNT(*), 4) FROM `olist-analytics-513008.olist.recon_orders`) AS recon_match_rate,
   (SELECT ROUND(SUM(gap), 0) FROM `olist-analytics-513008.olist.recon_orders`)                     AS recon_gap;
 
--- Monthly GMV split new vs repeat in long format (for stacked bars).
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.dash_monthly_split` AS
 SELECT order_month, 'New customers' AS customer_type, gmv_new AS gmv FROM `olist-analytics-513008.olist.monthly_kpis`
 UNION ALL
 SELECT order_month, 'Repeat customers', gmv_repeat FROM `olist-analytics-513008.olist.monthly_kpis`;
 
--- Monthly GMV by region (for the region trend and filter).
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.dash_monthly_region` AS
 SELECT order_month, region, ROUND(SUM(gmv), 0) AS gmv, COUNT(DISTINCT order_id) AS orders
 FROM `olist-analytics-513008.olist.fact_items`
 WHERE order_month BETWEEN '2017-01-01' AND '2018-08-01'
 GROUP BY order_month, region;
 
--- Segments: RFM + CLV in one table, with a readable label.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.dash_segments` AS
 SELECT
   SUBSTR(c.segment, 3) AS segment,
@@ -39,10 +32,9 @@ FROM `olist-analytics-513008.olist.clv_by_segment` c
 JOIN (SELECT segment, ROUND(SUM(monetary), 0) AS total_gmv
       FROM `olist-analytics-513008.olist.rfm_customers` GROUP BY segment) s USING (segment);
 
--- Cohort heatmap, months 0-12 only, with a text label for the cohort.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.dash_cohorts` AS
 SELECT FORMAT_DATE('%Y-%m', cohort_month) AS cohort, months_since,
-       FORMAT('M%02d', months_since) AS month_label,  -- zero-padded so it sorts M01..M12
+       FORMAT('M%02d', months_since) AS month_label,
        cohort_size,
        retention_pct / 100 AS retention_rate
 FROM `olist-analytics-513008.olist.cohort_retention`

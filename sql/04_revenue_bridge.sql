@@ -1,7 +1,3 @@
--- 04_revenue_bridge.sql
--- Month-over-month GMV change, split into what drove it.
-
--- A) Monthly KPIs + MoM change + new vs repeat split.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.monthly_kpis` AS
 WITH m AS (
   SELECT
@@ -32,7 +28,6 @@ FROM m;
 
 SELECT * FROM `olist-analytics-513008.olist.monthly_kpis` ORDER BY order_month;
 
--- B) Anomaly flag: days far above normal (z-score > 3).
 WITH d AS (
   SELECT DATE(purchased_at) AS day, SUM(gmv) AS gmv, COUNT(DISTINCT order_id) AS orders
   FROM `olist-analytics-513008.olist.fact_items`
@@ -45,7 +40,6 @@ FROM d
 QUALIFY z_score > 3
 ORDER BY z_score DESC;
 
--- C) Bridge for the biggest month: Oct -> Nov 2017, by category (top 8 movers).
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.bridge_category` AS
 SELECT
   category,
@@ -58,7 +52,6 @@ GROUP BY category;
 
 SELECT * FROM `olist-analytics-513008.olist.bridge_category` ORDER BY change DESC LIMIT 8;
 
--- D) Same bridge by region.
 SELECT
   region,
   ROUND(SUM(IF(order_month = '2017-10-01', gmv, 0)), 0) AS gmv_oct17,

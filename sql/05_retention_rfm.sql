@@ -1,7 +1,3 @@
--- 05_retention_rfm.sql
--- Repeat purchase rate, cohort retention, RFM segments, and why customers don't return.
-
--- A) Repeat purchase rate + days to second order.
 WITH per_customer AS (
   SELECT customer_unique_id,
          COUNT(DISTINCT order_id) AS orders,
@@ -23,7 +19,6 @@ SELECT
 FROM per_customer p
 LEFT JOIN second_order s USING (customer_unique_id);
 
--- B) Monthly cohort retention: % of each first-purchase cohort ordering again N months later.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.cohort_retention` AS
 WITH firsts AS (
   SELECT customer_unique_id, MIN(order_month) AS cohort_month
@@ -47,14 +42,12 @@ JOIN sizes s USING (cohort_month)
 WHERE a.cohort_month BETWEEN '2017-01-01' AND '2018-08-01'
 GROUP BY a.cohort_month, a.months_since, s.cohort_size;
 
--- Average retention curve across cohorts (months 1-6).
 SELECT months_since, ROUND(AVG(retention_pct), 2) AS avg_retention_pct
 FROM `olist-analytics-513008.olist.cohort_retention`
 WHERE months_since BETWEEN 1 AND 6
 GROUP BY months_since
 ORDER BY months_since;
 
--- C) RFM segmentation. Snapshot date = day after the last order in the data.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.rfm_customers` AS
 WITH base AS (
   SELECT customer_unique_id,
@@ -68,8 +61,8 @@ WITH base AS (
 ),
 scored AS (
   SELECT *,
-         6 - NTILE(5) OVER (ORDER BY recency_days) AS r_score,  -- 5 = most recent
-         NTILE(5) OVER (ORDER BY monetary)         AS m_score   -- 5 = highest spend
+         6 - NTILE(5) OVER (ORDER BY recency_days) AS r_score,
+         NTILE(5) OVER (ORDER BY monetary)         AS m_score
   FROM base
 )
 SELECT *,
@@ -95,7 +88,6 @@ FROM `olist-analytics-513008.olist.rfm_customers`
 GROUP BY segment
 ORDER BY segment;
 
--- D) Why don't customers return? First-order experience vs repeat rate.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.first_order_experience` AS
 WITH first_orders AS (
   SELECT DISTINCT customer_unique_id, order_id

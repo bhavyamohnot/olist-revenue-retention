@@ -1,9 +1,3 @@
--- 06_clv.sql
--- 12-month forward CLV by segment, estimated from what similar customers actually did.
--- Training window: customers whose reference order is on/before 2017-08-31,
--- so a full 12 months of follow-up exists (data ends Aug 2018).
-
--- Value band threshold: top 40% of first-order GMV = "high value" (matches RFM m_score >= 4).
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.clv_rates` AS
 WITH orders AS (
   SELECT customer_unique_id, order_id, order_seq,
@@ -36,8 +30,6 @@ GROUP BY value_band;
 
 SELECT * FROM `olist-analytics-513008.olist.clv_rates` ORDER BY value_band;
 
--- Apply the rates to each RFM segment.
--- Contribution margin is NOT in the data; 20% is an explicit, adjustable assumption.
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.clv_by_segment` AS
 SELECT
   r.segment,
@@ -54,8 +46,6 @@ GROUP BY r.segment;
 
 SELECT * FROM `olist-analytics-513008.olist.clv_by_segment` ORDER BY segment;
 
--- Break-even: for the At-risk high-value segment, the max spend per customer on a
--- reactivation incentive if it doubles the 12-month repeat rate.
 SELECT
   ROUND(expected_future_gmv_12m, 2)        AS baseline_future_gmv,
   ROUND(0.20 * expected_future_gmv_12m, 2) AS incremental_margin_if_repeat_doubles,

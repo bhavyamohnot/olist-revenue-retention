@@ -1,6 +1,3 @@
--- 02_reconciliation.sql
--- Item-level revenue (price + freight) vs payment-level totals, delivered orders only.
-
 CREATE OR REPLACE TABLE `olist-analytics-513008.olist.recon_orders` AS
 WITH items AS (
   SELECT order_id,
@@ -36,7 +33,6 @@ JOIN items i USING (order_id)
 JOIN pays  p USING (order_id)
 WHERE o.order_status = 'delivered';
 
--- Summary: how many orders match, and how big is the gap?
 SELECT
   recon_status,
   COUNT(*)                                   AS orders,
@@ -48,7 +44,6 @@ FROM `olist-analytics-513008.olist.recon_orders`
 GROUP BY recon_status
 ORDER BY orders DESC;
 
--- Overall totals.
 SELECT
   ROUND(SUM(item_total), 0) AS item_revenue,
   ROUND(SUM(paid), 0)       AS payment_revenue,
@@ -56,7 +51,6 @@ SELECT
   ROUND(100 * SUM(gap) / SUM(item_total), 3) AS gap_pct
 FROM `olist-analytics-513008.olist.recon_orders`;
 
--- Where does the "paid_more" gap come from? Split by installments.
 SELECT
   CASE WHEN installments <= 1 THEN '1 (single)'
        WHEN installments <= 5 THEN '2-5'
