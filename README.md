@@ -9,10 +9,10 @@ I wanted to practice the kind of analysis a revenue / CRM team actually does, so
 
 All the SQL is in BigQuery and the dashboard is in Looker Studio.
 
-**Dashboard:** [Looker Studio](https://lookerstudio.google.com/reporting/303762a4-ea28-491c-8b66-67e819dec816)
-**Short memo with recommendations:** [docs/memo.md](docs/memo.md)
-**All results in detail:** [docs/results.md](docs/results.md)
-**How I defined each metric:** [docs/metric_dictionary.md](docs/metric_dictionary.md)
+- Dashboard: [Looker Studio](https://lookerstudio.google.com/reporting/303762a4-ea28-491c-8b66-67e819dec816)
+- Short memo with recommendations: [docs/memo.md](docs/memo.md)
+- All results in detail: [docs/results.md](docs/results.md)
+- How I defined each metric: [docs/metric_dictionary.md](docs/metric_dictionary.md)
 
 ## What I found
 
